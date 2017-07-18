@@ -2,12 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NSwag.AspNetCore;
+using WebApiDemo.NSwag;
 
 namespace WebApiDemo
 {
@@ -23,6 +26,12 @@ namespace WebApiDemo
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseMvc();
+
+            var settings = new SwaggerUiSettings();
+
+            settings.TypeMappers.Add(new ErrorResponseTypeMapper());
+
+            app.UseSwaggerUi(typeof(Startup).GetTypeInfo().Assembly, settings);
         }
     }
 }

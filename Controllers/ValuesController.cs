@@ -1,19 +1,29 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using NSwag.Annotations;
+using WebApiDemo.Models;
+using WebApiDemo.NSwag;
 
 namespace WebApiDemo.Controllers
 {
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
+        private List<ValueModel> _values = new List<ValueModel>()
+        {
+            new ValueModel { Value = "value1" },
+            new ValueModel { Value = "value2" }
+        };
+
         // GET api/values
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<ValueModel> Get()
         {
-            return new string[] { "value1", "value2" };
+            return _values;
         }
 
         // GET api/values/5
@@ -25,8 +35,10 @@ namespace WebApiDemo.Controllers
 
         // POST api/values
         [HttpPost]
-        public void Post([FromBody]string value)
+        [SwaggerResponse(HttpStatusCode.BadRequest, typeof(ErrorResponse<ValueModel>), Description = "Data failed validation")]
+        public void Post([FromBody]ValueModel value)
         {
+            _values.Add(value);
         }
 
         // PUT api/values/5
